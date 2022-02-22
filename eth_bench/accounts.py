@@ -1,6 +1,6 @@
 import random
 
-from .account import create_account
+from .util.account import create_account
 
 
 class BenchAccounts:
