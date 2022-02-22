@@ -1,7 +1,6 @@
 import random
 
-from coincurve import PublicKey
-from sha3 import keccak_256
+from .account import create_account
 
 
 class BenchAccounts:
@@ -10,17 +9,12 @@ class BenchAccounts:
         self._count = count
         self._seed = seed
         random.seed(seed)
-        inputs = [random.randbytes(32) for _ in range(count)]
-        private_keys = [keccak_256(input).digest() for input in inputs]
-        public_keys = [
-            PublicKey.from_valid_secret(private_key).format(compressed=False)[1:]
-            for private_key in private_keys
-        ]
-        assert isinstance(public_keys[0], (bytes,))
-        addresses = [
-            keccak_256(public_key).digest()[-20:] for public_key in public_keys
-        ]
-        assert isinstance(addresses[0], (bytes,))
+        private_keys = []
+        addresses = []
+        for _ in range(count):
+            private_key, address = create_account()
+            private_keys.append(private_key)
+            addresses.append(address)
         self._private_keys = private_keys
         self._addresses = addresses
 
